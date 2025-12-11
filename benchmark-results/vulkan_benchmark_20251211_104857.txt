@@ -1,0 +1,73 @@
+==============================================
+  Vulkan Benchmark for llama.cpp
+  Thread: https://github.com/ggml-org/llama.cpp/discussions/10879
+  Date: Thu Dec 11 10:48:57 AM MST 2025
+==============================================
+
+=== SYSTEM INFORMATION ===
+OS: Linux 6.17.9-zen1-1-zen
+Distro: Arch Linux
+
+=== VULKAN INFORMATION ===
+	driverVersion      = 25.3.1
+	deviceName         = AMD Radeon RX 7900 XTX (RADV NAVI31)
+	driverName         = radv
+	driverInfo         = Mesa 25.3.1-arch1.2
+	driverVersion      = 25.3.1
+	deviceName         = AMD Radeon RX 7900 XTX (RADV NAVI31)
+	driverName         = radv
+	driverInfo         = Mesa 25.3.1-arch1.2
+
+=== BUILD INFO ===
+Commit: 34ce48d97
+Model: /home/mikekey/Projects/0_AI/llama.cpp/models/llama-2-7b.Q4_0.gguf
+
+=== RDNA3 OPTIMIZATIONS ===
+GGML_VK_DISABLE_COOPMAT=1 (coopmat slower on RDNA3)
+Batch size: 256 (avoids pp512 performance cliff)
+See: https://github.com/ggml-org/llama.cpp/issues/10966
+
+==============================================
+  CANONICAL 7B Q4_0 BENCHMARKS
+==============================================
+
+### GPU 0 ONLY ###
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: none
+| model                          |       size |     params | backend    | ngl | n_batch | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------: | -: | --------------: | -------------------: |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  0 |           pp512 |        758.22 ± 1.75 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  0 |           tg128 |         85.99 ± 0.02 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  1 |           pp512 |       1015.25 ± 1.18 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  1 |           tg128 |        128.98 ± 0.01 |
+
+build: 34ce48d97 (7356)
+
+### GPU 1 ONLY ###
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: none
+| model                          |       size |     params | backend    | ngl | n_batch | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------: | -: | --------------: | -------------------: |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  0 |           pp512 |        198.13 ± 0.15 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  0 |           tg128 |         31.93 ± 0.21 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  1 |           pp512 |        279.52 ± 0.72 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  1 |           tg128 |         57.69 ± 0.01 |
+
+build: 34ce48d97 (7356)
+
+### DUAL GPU ###
+ggml_vulkan: Found 2 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: none
+ggml_vulkan: 1 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: none
+| model                          |       size |     params | backend    | ngl | n_batch | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | ------: | -: | --------------: | -------------------: |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  0 |           pp512 |       1012.11 ± 0.98 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  0 |           tg128 |         91.60 ± 0.03 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  1 |           pp512 |       1768.39 ± 5.23 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |     256 |  1 |           tg128 |        115.63 ± 0.01 |
+
+build: 34ce48d97 (7356)
+
+==============================================
+  BENCHMARK COMPLETE
+==============================================

@@ -6,10 +6,11 @@
 # System: 2x AMD Radeon RX 7900 XTX (24GB each)
 # Backend: Vulkan via RADV/Mesa
 #
-# RDNA3 Optimizations:
-#   - GGML_VK_DISABLE_COOPMAT=1 : coopmat is currently slower on RDNA3
-#   - -b 256 : avoids batch size 512 performance cliff on 7900 XTX
-#   See: https://github.com/ggml-org/llama.cpp/issues/10966
+# Optimal Settings (as of 2025-12-11):
+#   - coopmat ENABLED (KHR_coopmat works correctly on RDNA3 now)
+#   - -fa 1 : flash attention for ~5% tg improvement
+#   - -b 512 : optimal batch size
+#   See: https://github.com/ggml-org/llama.cpp/discussions/10879
 #
 
 set -e
@@ -26,9 +27,10 @@ OUTPUT_DIR="$HOME/Projects/0_AI/AMD-RX7900XTX-VULCAN/benchmark-results"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 OUTPUT_FILE="$OUTPUT_DIR/vulkan_benchmark_$TIMESTAMP.txt"
 
-# RDNA3 Vulkan optimizations
-export GGML_VK_DISABLE_COOPMAT=1
-BATCH_SIZE=256
+# Optimal Vulkan settings for RDNA3 (coopmat now works)
+# export GGML_VK_DISABLE_COOPMAT=1  # No longer needed
+BATCH_SIZE=512
+FLASH_ATTN=1
 
 # Colors for output
 RED='\033[0;31m'
@@ -77,7 +79,7 @@ if [ ! -f "$MODEL_7B" ]; then
 fi
 
 echo_success "Prerequisites OK"
-echo_info "RDNA3 optimizations: GGML_VK_DISABLE_COOPMAT=1, batch_size=$BATCH_SIZE"
+echo_info "Settings: coopmat=enabled, flash_attn=$FLASH_ATTN, batch_size=$BATCH_SIZE"
 echo ""
 
 # --- START OUTPUT CAPTURE (benchmarks only) ---
@@ -109,11 +111,12 @@ echo "Commit: $COMMIT_HASH"
 echo "Model: $MODEL_7B"
 echo ""
 
-# RDNA3 Optimizations
-echo "=== RDNA3 OPTIMIZATIONS ==="
-echo "GGML_VK_DISABLE_COOPMAT=1 (coopmat slower on RDNA3)"
-echo "Batch size: $BATCH_SIZE (avoids pp512 performance cliff)"
-echo "See: https://github.com/ggml-org/llama.cpp/issues/10966"
+# Optimal Settings
+echo "=== VULKAN SETTINGS ==="
+echo "Coopmat: ENABLED (KHR_coopmat works on RDNA3)"
+echo "Flash Attention: $FLASH_ATTN"
+echo "Batch size: $BATCH_SIZE"
+echo "See: https://github.com/ggml-org/llama.cpp/discussions/10879"
 echo ""
 
 # --- CANONICAL 7B BENCHMARKS ---
@@ -122,16 +125,16 @@ echo "  CANONICAL 7B Q4_0 BENCHMARKS"
 echo "=============================================="
 echo ""
 
-echo "### GPU 0 ONLY ###"
-GGML_VK_VISIBLE_DEVICES=0 $LLAMA_BENCH -m "$MODEL_7B" -ngl 100 -fa 0,1 -b $BATCH_SIZE
+echo "### GPU 0 ONLY (pciBus 6 - bottom slot, display) ###"
+GGML_VK_VISIBLE_DEVICES=0 $LLAMA_BENCH -m "$MODEL_7B" -ngl 100 -fa $FLASH_ATTN -b $BATCH_SIZE
 echo ""
 
-echo "### GPU 1 ONLY ###"
-GGML_VK_VISIBLE_DEVICES=1 $LLAMA_BENCH -m "$MODEL_7B" -ngl 100 -fa 0,1 -b $BATCH_SIZE
+echo "### GPU 1 ONLY (pciBus 15 - top slot, compute) ###"
+GGML_VK_VISIBLE_DEVICES=1 $LLAMA_BENCH -m "$MODEL_7B" -ngl 100 -fa $FLASH_ATTN -b $BATCH_SIZE
 echo ""
 
-echo "### DUAL GPU ###"
-GGML_VK_VISIBLE_DEVICES=0,1 $LLAMA_BENCH -m "$MODEL_7B" -ngl 100 -fa 0,1 -b $BATCH_SIZE
+echo "### DUAL GPU (note: slower for small models due to PCIe overhead) ###"
+GGML_VK_VISIBLE_DEVICES=0,1 $LLAMA_BENCH -m "$MODEL_7B" -ngl 100 -fa $FLASH_ATTN -b $BATCH_SIZE
 echo ""
 
 # --- 70B BENCHMARKS (if model exists) ---
@@ -144,7 +147,7 @@ if [ -n "$MODEL_70B" ] && [ -f "$MODEL_70B" ]; then
     echo ""
 
     echo "### 70B DUAL GPU ###"
-    GGML_VK_VISIBLE_DEVICES=0,1 $LLAMA_BENCH -m "$MODEL_70B" -ngl 100 -fa 0,1 -b $BATCH_SIZE
+    GGML_VK_VISIBLE_DEVICES=0,1 $LLAMA_BENCH -m "$MODEL_70B" -ngl 100 -fa $FLASH_ATTN -b $BATCH_SIZE
     echo ""
 fi
 
