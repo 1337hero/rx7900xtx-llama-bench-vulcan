@@ -1,0 +1,68 @@
+==============================================
+  Vulkan Benchmark for llama.cpp
+  Thread: https://github.com/ggml-org/llama.cpp/discussions/10879
+  Date: Thu Dec 11 07:30:40 AM MST 2025
+==============================================
+
+=== SYSTEM INFORMATION ===
+OS: Linux 6.12.61-1-lts
+Distro: Arch Linux
+
+=== VULKAN INFORMATION ===
+	driverVersion      = 25.3.1
+	deviceName         = AMD Radeon RX 7900 XTX (RADV NAVI31)
+	driverName         = radv
+	driverInfo         = Mesa 25.3.1-arch1.2
+	driverVersion      = 25.3.1
+	deviceName         = AMD Radeon RX 7900 XTX (RADV NAVI31)
+	driverName         = radv
+	driverInfo         = Mesa 25.3.1-arch1.2
+
+=== BUILD INFO ===
+Commit: 34ce48d97
+Model: /home/mikekey/Projects/0_AI/llama.cpp/models/llama-2-7b.Q4_0.gguf
+
+==============================================
+  CANONICAL 7B Q4_0 BENCHMARKS
+==============================================
+
+### GPU 0 ONLY ###
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+| model                          |       size |     params | backend    | ngl | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | --------------: | -------------------: |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  0 |           pp512 |        490.97 ± 2.27 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  0 |           tg128 |         86.06 ± 0.13 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  1 |           pp512 |        644.10 ± 4.07 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  1 |           tg128 |        129.07 ± 0.21 |
+
+build: 34ce48d97 (7356)
+
+### GPU 1 ONLY ###
+ggml_vulkan: Found 1 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+| model                          |       size |     params | backend    | ngl | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | --------------: | -------------------: |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  0 |           pp512 |        152.35 ± 0.55 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  0 |           tg128 |         32.04 ± 0.01 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  1 |           pp512 |        199.93 ± 1.21 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  1 |           tg128 |         57.67 ± 0.03 |
+
+build: 34ce48d97 (7356)
+
+### DUAL GPU ###
+ggml_vulkan: Found 2 Vulkan devices:
+ggml_vulkan: 0 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+ggml_vulkan: 1 = AMD Radeon RX 7900 XTX (RADV NAVI31) (radv) | uma: 0 | fp16: 1 | bf16: 0 | warp size: 64 | shared memory: 65536 | int dot: 1 | matrix cores: KHR_coopmat
+| model                          |       size |     params | backend    | ngl | fa |            test |                  t/s |
+| ------------------------------ | ---------: | ---------: | ---------- | --: | -: | --------------: | -------------------: |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  0 |           pp512 |        828.43 ± 5.54 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  0 |           tg128 |         85.17 ± 0.09 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  1 |           pp512 |      1043.22 ± 12.40 |
+| llama 7B Q4_0                  |   3.56 GiB |     6.74 B | Vulkan     | 100 |  1 |           tg128 |        105.24 ± 0.07 |
+
+build: 34ce48d97 (7356)
+
+==============================================
+  BENCHMARK COMPLETE
+==============================================
